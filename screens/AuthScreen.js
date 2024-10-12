@@ -35,7 +35,7 @@ const AuthScreen = ({ navigation }) => {
       Alert.alert(isLogin ? 'Login failed' : 'Signup failed', error.response?.data?.message || 'Something went wrong');
     }
   
-    navigation.navigate('Main'); // Navigate to Home on login
+   // navigation.navigate('Home'); // Navigate to Home on login
   };
 
   return (
