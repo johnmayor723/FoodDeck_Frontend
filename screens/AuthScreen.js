@@ -11,7 +11,7 @@ const AuthScreen = ({ navigation }) => {
   const [name, setName] = useState(''); // Only needed for signup
   const [isLogin, setIsLogin] = useState(true); // Toggle between login/signup
   
-  const handleLogin = () => {
+  const handleLogin = async () => {
       const endpoint = 'https://pantry-hub-server.onrender.com/api/auth/login'
       const payload = {name, email, password}
 
