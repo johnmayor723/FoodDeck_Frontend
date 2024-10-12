@@ -16,6 +16,8 @@ const AuthScreen = ({ navigation }) => {
       const payload = {name, email, password}
 
          // Make the API request using axios
+
+    try {
       const response = await axios.post(endpoint, payload);
 
       const { token, user } = response.data;
