@@ -27,7 +27,8 @@ const AuthScreen = ({ navigation }) => {
       Alert.alert(isLogin ? 'Login successful!' : 'Signup successful!', `Welcome ${user.name}`);
       navigation.navigate('Home'); // Navigate to Home or another screen after auth
 
-    } catch (error) {
+    };
+    catch (error) {
       console.error(error);
       Alert.alert(isLogin ? 'Login failed' : 'Signup failed', error.response?.data?.message || 'Something went wrong');
     }
