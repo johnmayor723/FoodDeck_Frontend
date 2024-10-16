@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Alert, View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+
 
 const SignupScreen = ({ navigation }) => {
   const [name, setName] = useState('');
