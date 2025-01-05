@@ -18,7 +18,7 @@ const AuthScreen = ({navigation}) => {
     setIsLoading(true); // Show loader
 
     try {
-      const endpoint = 'https://pantry-hub-server.onrender.com/api/auth/login';
+      const endpoint = 'http://api.fooddeckpro.com.ng/api/auth/login';
       const payload = { email, password };
 
       // Make the API request using axios
