@@ -33,7 +33,7 @@ const initializePayment = async () => {
     setLoading(true);
     try {
         const response = await axios.post(
-            'https://pantry-hub-server.onrender.com/api/orders/initialize',
+            'http://api.fooddeckpro.com.ng/api/orders/initialize',
             { amount:totalAmount*100, email }
         );
         console.log("API call response:", response);
@@ -49,7 +49,7 @@ const initializePayment = async () => {
 
 const handleOrderCreation = async () => {
         try {
-            await axios.post('https://pantry-hub-server.onrender.com/api/orders', {
+            await axios.post('http://api.fooddeckpro.com.ng/api/orders', {
                 name,
                 email,
                 address,
