@@ -34,7 +34,7 @@ const CartScreen = ({ navigation }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('https://pantry-hub-server.onrender.com/api/products');
+      const response = await axios.get('http://api.fooddeckpro.com.ng/api/products');
       setProducts(response.data);
     } catch (error) {
       console.log('Error fetching products:', error);
