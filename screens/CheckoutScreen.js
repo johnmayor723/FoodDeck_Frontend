@@ -104,7 +104,7 @@ const CheckoutScreen = () => {
 
   // Proceed to final payment
   const proceedToFinalPayment = () => {
-    navigation.navigate("FinalPaymentScreen", {
+    navigation.navigate("FinalCheckout", {
       totalAmount: finalAmount,
       discountApplied,
     });
