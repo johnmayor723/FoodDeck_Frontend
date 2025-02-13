@@ -40,15 +40,15 @@ const handleCheckout = async () => {
     }
 
     // Validate coupon
-    const response = await axios.post("https://api.foodliie.com/api/auth/validate-coupon", {
+    const response = await axios.post("http://api.foodliie.com/api/auth/validate-coupon", {
       userId,
     });
 
     let finalAmount = totalAmount;
     let noCoupon = true;
 
-    if (response.data.valid) {
-      const couponValue = response.data.value;
+    if (response.data.coupon) {
+      const couponValue = response.data.coupon.value;
       const discount = Math.min(totalAmount * 0.2, couponValue);
       finalAmount -= discount;
       noCoupon = false;
