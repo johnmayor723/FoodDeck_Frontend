@@ -51,6 +51,7 @@ const CheckoutScreen = () => {
         "https://api.foodliie.com/api/agent/verify-couponCode",
         { couponCode: discountCode }
       );
+      console.log("Api call response:",response);
 
       if (response.data.couponCode?.isValid) {
         await activateCoupon();
@@ -80,10 +81,11 @@ const CheckoutScreen = () => {
       const user = JSON.parse(userData);
       const userId = user._id || user.id;
 
-      await axios.post("https://api.foodliie.com/api/auth/activate-coupon", {
+      const couponActivated = await axios.post("https://api.foodliie.com/api/auth/activate-coupon", {
         userId,
         couponCode: discountCode,
       });
+      console.log("response is:", CouponActivated)
 
       // Apply 20% discount
       const discount = totalAmount * 0.2;
