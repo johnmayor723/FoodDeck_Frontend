@@ -20,11 +20,13 @@ const PaymentScreen = () => {
   
   
 
+  const handleCheckout = async () => {
   try {
     // Fetch user from AsyncStorage
     const userData = await AsyncStorage.getItem("user");
     if (!userData) {
       console.log("No user data found.");
+      navigation.navigate("Checkout", { totalAmount, noCoupon: true });
       return;
     }
 
@@ -35,29 +37,41 @@ const PaymentScreen = () => {
     const userId = user._id || user.id;
     if (!userId) {
       console.log("User ID not found.");
+      navigation.navigate("Checkout", { totalAmount, noCoupon: true });
       return;
     }
 
     // Validate coupon
-    const response = await axios.post("http://api.foodliie.com/api/auth/validate-coupon", {
-      userId,
-    });
+    const response = await axios.post("http://api.foodliie.com/api/auth/validate-coupon", { userId });
+
+    // Log full API response
+    console.log("API Response:", response.data);
 
     let finalAmount = totalAmount;
     let noCoupon = true;
 
-    if (response.data.coupon) {
-      const couponValue = response.data.coupon.value;
-      const discount = Math.min(totalAmount * 0.2, couponValue);
-      finalAmount -= discount;
-      noCoupon = false;
+    // Explicitly check if coupon is null or missing
+    if (!response.data.coupon) {
+      console.log("No valid coupon found.");
+      navigation.navigate("Checkout", { totalAmount, noCoupon: true });
+      return;
     }
+
+    // Apply discount if coupon exists
+    const couponValue = response.data.coupon.value;
+    const discount = Math.min(totalAmount * 0.2, couponValue);
+    finalAmount -= discount;
+    noCoupon = false;
 
     // Navigate to checkout with final amount
     navigation.navigate("Checkout", { totalAmount: finalAmount, noCoupon });
+
   } catch (error) {
     console.error("Error handling checkout:", error);
-    // Fallback to normal checkout if there's an error
+    if (error.response) {
+      console.log("Error Response Data:", error.response.data);
+    }
+    // Fallback to normal checkout in case of any error
     navigation.navigate("Checkout", { totalAmount, noCoupon: true });
   }
 };
