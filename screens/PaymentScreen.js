@@ -1,4 +1,6 @@
 import React from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -16,8 +18,7 @@ const PaymentScreen = () => {
   // Convert totalAmount to Naira format
   const formattedTotalAmount = `₦${totalAmount.toFixed(2)}`;
   
-  import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+  
 
 const handleCheckout = async () => {
   try {
