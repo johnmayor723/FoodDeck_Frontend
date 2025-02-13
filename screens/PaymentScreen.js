@@ -16,9 +16,51 @@ const PaymentScreen = () => {
   // Convert totalAmount to Naira format
   const formattedTotalAmount = `₦${totalAmount.toFixed(2)}`;
   
-  const handleCheckout = () => {
-    navigation.navigate("Checkout", { totalAmount});
-  };
+  import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+
+const handleCheckout = async () => {
+  try {
+    // Fetch user from AsyncStorage
+    const userData = await AsyncStorage.getItem("user");
+    if (!userData) {
+      console.log("No user data found.");
+      return;
+    }
+
+    const user = JSON.parse(userData);
+    console.log("User:", user);
+
+    // Ensure correct user ID format
+    const userId = user._id || user.id;
+    if (!userId) {
+      console.log("User ID not found.");
+      return;
+    }
+
+    // Validate coupon
+    const response = await axios.post("https://api.foodliie.com/api/auth/validate-coupon", {
+      userId,
+    });
+
+    let finalAmount = totalAmount;
+    let noCoupon = true;
+
+    if (response.data.valid) {
+      const couponValue = response.data.value;
+      const discount = Math.min(totalAmount * 0.2, couponValue);
+      finalAmount -= discount;
+      noCoupon = false;
+    }
+
+    // Navigate to checkout with final amount
+    navigation.navigate("Checkout", { totalAmount: finalAmount, noCoupon });
+  } catch (error) {
+    console.error("Error handling checkout:", error);
+    // Fallback to normal checkout if there's an error
+    navigation.navigate("Checkout", { totalAmount, noCoupon: true });
+  }
+};
 
   return (
     <View style={styles.container}>
