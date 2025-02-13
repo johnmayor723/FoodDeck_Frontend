@@ -31,6 +31,7 @@ import SnacksScreen from './screens/SnacksScreen.js';
 import LogoutScreen from './screens/LogoutScreen'; // New logout screen
 import CheckoutScreen from "./screens/CheckoutScreen";
 import SuccessScreen from "./screens/SuccessScreen.js";
+import FinalCheckoutScreen from "./screens/FinalCheckoutScreen.js";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -127,6 +128,8 @@ const AppNavigator = () => {
           <Stack.Screen name="Snack" component={SnacksScreen} />
           <Stack.Screen name="Oil Product" component={OilProductsScreen} />
           <Stack.Screen name="Dairy" component={DairyScreen} />
+          <Stack.Screen name="FinalCheckout" component={FinalCheckoutScreen} />
+  
           <Stack.Screen name="Success" component={SuccessScreen} />
         </>
       ) : (
