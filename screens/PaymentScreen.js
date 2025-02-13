@@ -20,7 +20,6 @@ const PaymentScreen = () => {
   
   
 
-const handleCheckout = async () => {
   try {
     // Fetch user from AsyncStorage
     const userData = await AsyncStorage.getItem("user");
@@ -62,6 +61,7 @@ const handleCheckout = async () => {
     navigation.navigate("Checkout", { totalAmount, noCoupon: true });
   }
 };
+
 
   return (
     <View style={styles.container}>
