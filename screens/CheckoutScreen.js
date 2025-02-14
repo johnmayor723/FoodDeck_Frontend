@@ -48,7 +48,7 @@ const CheckoutScreen = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://api.foodliie.com/api/agent/verify-couponCode",
+        "http://api.foodliie.com/api/agent/verify-couponCode",
         { couponCode: discountCode }
       );
       console.log("Api call response:",response);
