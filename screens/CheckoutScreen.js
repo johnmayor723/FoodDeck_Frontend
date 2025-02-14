@@ -196,12 +196,14 @@ const CheckoutScreen = () => {
           style={styles.input}
         />
 
+        {/* Show discount message when applied */}
         {discountApplied && (
           <Text style={styles.discountInfo}>
             Discount Applied! New Total: ₦{finalAmount.toFixed(2)}
           </Text>
         )}
 
+        {/* Show discount activation input when applicable */}
         {noCoupon && !discountApplied && (
           <View style={styles.discountContainer}>
             <TextInput
