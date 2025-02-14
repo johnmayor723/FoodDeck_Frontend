@@ -11,6 +11,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useRoute, useNavigation } from "@react-navigation/native";
+import { WebView } from "react-native-webview";
 
 const CheckoutScreen = () => {
   const [cart, setCart] = useState([]);
@@ -22,6 +23,7 @@ const CheckoutScreen = () => {
   const [loading, setLoading] = useState(false);
   const [finalAmount, setFinalAmount] = useState(0);
   const [discountApplied, setDiscountApplied] = useState(false);
+  const [authUrl, setAuthUrl] = useState("");
 
   const route = useRoute();
   const navigation = useNavigation();
@@ -31,7 +33,7 @@ const CheckoutScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       console.log("Total amount:", totalAmount);
-      setFinalAmount(totalAmount); // Default amount before applying discount
+      setFinalAmount(totalAmount); // Default amount before discount
       const storedCart = await AsyncStorage.getItem("cart");
       if (storedCart) setCart(JSON.parse(storedCart));
     };
@@ -51,7 +53,7 @@ const CheckoutScreen = () => {
         "http://api.foodliie.com/api/agent/verify-couponCode",
         { couponCode: discountCode }
       );
-      console.log("Api call response:",response.data);
+      console.log("API call response:", response.data);
 
       if (response.data.couponCode?.isValid) {
         await activateCoupon();
@@ -81,16 +83,10 @@ const CheckoutScreen = () => {
       const user = JSON.parse(userData);
       const userId = user._id || user.id;
 
-      axios.post("http://api.foodliie.com/api/auth/activate-coupon", {
-    userId,
-    couponCode: discountCode,
-})
-.then((response) => {
-    console.log("response is:", response.data);
-})
-.catch((error) => {
-    console.error("Error activating coupon:", error);
-});
+      await axios.post("http://api.foodliie.com/api/auth/activate-coupon", {
+        userId,
+        couponCode: discountCode,
+      });
 
       // Apply 20% discount
       const discount = totalAmount * 0.2;
@@ -99,7 +95,10 @@ const CheckoutScreen = () => {
       setFinalAmount(discountedTotal);
       setDiscountApplied(true);
 
-      Alert.alert("Success", `Coupon activated! Discounted amount: ₦${discountedTotal.toFixed(2)}`);
+      Alert.alert(
+        "Success",
+        `Coupon activated! Discounted amount: ₦${discountedTotal.toFixed(2)}`
+      );
     } catch (error) {
       console.error(
         "Error activating coupon:",
@@ -109,13 +108,60 @@ const CheckoutScreen = () => {
     }
   };
 
-  // Proceed to final payment
-  const proceedToFinalPayment = () => {
-    navigation.navigate("FinalCheckout", {
-      totalAmount: finalAmount,
-      discountApplied,
-    });
+  // Handle checkout: create order and initialize payment
+  const handleCheckout = async () => {
+    if (!name || !email || !address) {
+      Alert.alert("Error", "Please fill all required fields.");
+      return;
+    }
+
+    // Determine amount to charge
+    const amountToCharge = discountApplied ? finalAmount : totalAmount;
+
+    try {
+      setLoading(true);
+      // Create order
+      await axios.post("http://api.foodliie.com/api/orders", {
+        name,
+        email,
+        address,
+        cart,
+        amount: amountToCharge,
+      });
+      // Initialize payment
+      const response = await axios.post(
+        "http://api.foodliie.com/api/orders/initialize",
+        { amount: amountToCharge * 100, email }
+      );
+      console.log("Payment initialization response:", response.data);
+      setAuthUrl(response.data.authUrl);
+    } catch (error) {
+      console.error(
+        "Checkout error:",
+        error.response ? error.response.data : error.message
+      );
+      Alert.alert("Error", "Checkout failed");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Handle payment completion in WebView
+  const handlePaymentCompletion = () => {
+    console.log("Transaction successfully processed");
+    navigation.replace("SuccessScreen");
+  };
+
+  if (authUrl) {
+    return (
+      <WebView
+        source={{ uri: authUrl }}
+        onNavigationStateChange={(state) => {
+          if (state.url.includes("success")) handlePaymentCompletion();
+        }}
+      />
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -150,14 +196,12 @@ const CheckoutScreen = () => {
           style={styles.input}
         />
 
-        {/* Display discount info if applied */}
         {discountApplied && (
           <Text style={styles.discountInfo}>
             Discount Applied! New Total: ₦{finalAmount.toFixed(2)}
           </Text>
         )}
 
-        {/* Show discount input only if noCoupon is true & no discount has been applied */}
         {noCoupon && !discountApplied && (
           <View style={styles.discountContainer}>
             <TextInput
@@ -175,7 +219,7 @@ const CheckoutScreen = () => {
         ) : (
           <Button
             title="Proceed to Payment"
-            onPress={proceedToFinalPayment}
+            onPress={handleCheckout}
             color="#2D7B30"
           />
         )}
