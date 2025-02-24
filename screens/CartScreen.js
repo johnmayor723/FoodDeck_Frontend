@@ -34,7 +34,7 @@ const CartScreen = ({ navigation }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://api.foodliie.com/api/products');
+      const response = await axios.get('https://api.foodliie.com/api/products');
       setProducts(response.data);
     } catch (error) {
       console.log('Error fetching products:', error);
