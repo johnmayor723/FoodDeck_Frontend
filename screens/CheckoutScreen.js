@@ -50,7 +50,7 @@ const CheckoutScreen = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://api.foodliie.com/api/agent/verify-couponCode",
+        "https://api.foodliie.com/api/agent/verify-couponCode",
         { couponCode: discountCode }
       );
       console.log("API call response:", response.data);
@@ -121,7 +121,7 @@ const CheckoutScreen = () => {
     try {
       setLoading(true);
       // Create order
-      await axios.post("http://api.foodliie.com/api/orders", {
+      await axios.post("https://api.foodliie.com/api/orders", {
         name,
         email,
         address,
@@ -130,7 +130,7 @@ const CheckoutScreen = () => {
       });
       // Initialize payment
       const response = await axios.post(
-        "http://api.foodliie.com/api/orders/initialize",
+        "https://api.foodliie.com/api/orders/initialize",
         { amount: amountToCharge * 100, email }
       );
       console.log("Payment initialization response:", response.data);
