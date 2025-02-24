@@ -42,7 +42,7 @@ const PaymentScreen = () => {
     }
 
     // Validate coupon
-    const response = await axios.post("http://api.foodliie.com/api/auth/validate-coupon", { userId });
+    const response = await axios.post("https://api.foodliie.com/api/auth/validate-coupon", { userId });
 
     // Log full API response
     console.log("API Response:", response.data);
