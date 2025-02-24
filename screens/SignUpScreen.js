@@ -16,7 +16,7 @@ const SignupScreen = ({ navigation }) => {
     setIsLoading(true); // Show loader
 
     try {
-      const endpoint = 'http://api.foodliie.com/api/auth/register';
+      const endpoint = 'https://api.foodliie.com/api/auth/register';
       const payload = { name, email, password };
 
       // Make the API request using axios
