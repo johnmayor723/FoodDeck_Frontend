@@ -18,7 +18,7 @@ const AuthScreen = ({navigation}) => {
     setIsLoading(true); // Show loader
 
     try {
-      const endpoint = 'http://api.foodliie.com/api/auth/login';
+      const endpoint = 'https://api.foodliie.com/api/auth/login';
       const payload = { email, password };
 
       // Make the API request using axios
